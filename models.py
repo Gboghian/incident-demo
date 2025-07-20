@@ -4,6 +4,17 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
 
+# Many-to-many association table for Incident-Parts relationship
+incident_parts = db.Table('incident_parts',
+    db.Column('incident_id', db.Integer, db.ForeignKey('incidents.id'), primary_key=True),
+    db.Column('part_id', db.Integer, db.ForeignKey('parts.id'), primary_key=True),
+    db.Column('quantity_used', db.Integer, default=1),  # Number of parts used
+    db.Column('status', db.String(20), default='required'),  # 'required', 'ordered', 'received', 'installed'
+    db.Column('notes', db.Text),  # Additional notes about the part usage
+    db.Column('created_at', db.DateTime, default=datetime.utcnow),
+    db.Column('updated_at', db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+)
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
@@ -82,6 +93,12 @@ class Incident(db.Model):
     assigned_to = db.relationship('User', foreign_keys=[assigned_to_id], backref='assigned_incidents')
     engineer = db.relationship('Engineer', foreign_keys=[engineer_id], backref='incidents_assigned')
     
+    # Many-to-many relationship with parts
+    parts = db.relationship('Part', 
+                           secondary=incident_parts, 
+                           back_populates='incidents',
+                           lazy='dynamic')
+    
     def __repr__(self):
         return f'<Incident {self.id}: {self.title} - {self.status}>'
     
@@ -135,3 +152,81 @@ class Engineer(db.Model):
     
     def __repr__(self):
         return f'<Engineer {self.employee_id}: {self.user.username}>'
+
+class Part(db.Model):
+    """
+    Part model to represent spare parts, components, and materials used in incident resolution.
+    Links to incidents through the many-to-many incident_parts association table.
+    """
+    __tablename__ = 'parts'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    part_number = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    
+    # Part classification
+    category = db.Column(db.String(50))  # 'mechanical', 'electrical', 'hydraulic', 'pneumatic', etc.
+    subcategory = db.Column(db.String(50))  # More specific classification
+    
+    # Supplier and procurement information
+    supplier = db.Column(db.String(100))
+    supplier_part_number = db.Column(db.String(50))
+    manufacturer = db.Column(db.String(100))
+    model_number = db.Column(db.String(50))
+    
+    # Cost and inventory
+    unit_cost = db.Column(db.Float)  # Cost per unit
+    currency = db.Column(db.String(3), default='USD')  # Currency code
+    minimum_stock = db.Column(db.Integer, default=0)  # Minimum stock level
+    current_stock = db.Column(db.Integer, default=0)  # Current inventory level
+    location = db.Column(db.String(100))  # Storage location
+    
+    # Technical specifications
+    specifications = db.Column(db.Text)  # Technical specifications in JSON or text format
+    compatibility = db.Column(db.Text)  # Compatible equipment/systems
+    
+    # Status and lifecycle
+    status = db.Column(db.String(20), default='active')  # 'active', 'discontinued', 'obsolete'
+    lead_time_days = db.Column(db.Integer)  # Lead time for ordering in days
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Many-to-many relationship with incidents
+    incidents = db.relationship('Incident', 
+                               secondary=incident_parts, 
+                               back_populates='parts',
+                               lazy='dynamic')
+    
+    def __repr__(self):
+        return f'<Part {self.part_number}: {self.name}>'
+    
+    def is_low_stock(self):
+        """Check if part is below minimum stock level."""
+        return self.current_stock <= self.minimum_stock
+    
+    def total_usage_count(self):
+        """Get total number of times this part has been used in incidents."""
+        return db.session.query(incident_parts).filter_by(part_id=self.id).count()
+    
+    def get_usage_in_incident(self, incident_id):
+        """Get part usage details for a specific incident."""
+        return db.session.query(incident_parts).filter_by(
+            incident_id=incident_id, 
+            part_id=self.id
+        ).first()
+    
+    @classmethod
+    def get_low_stock_parts(cls):
+        """Get all parts that are below minimum stock level."""
+        return cls.query.filter(cls.current_stock <= cls.minimum_stock).all()
+    
+    @classmethod
+    def search_by_equipment(cls, equipment_name):
+        """Search for parts compatible with specific equipment."""
+        return cls.query.filter(
+            cls.compatibility.contains(equipment_name) |
+            cls.description.contains(equipment_name)
+        ).all()
