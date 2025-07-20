@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}New Incident (Enhanced) - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3>Report New Incident (Enhanced Form)</h3>
+                <p class="text-muted mb-0">Complete incident reporting form with detailed classification and assessment options.</p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3">📋 Basic Information</h5>
+                        
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control") }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.title.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.equipment.label(class="form-label") }}
+                                    {{ form.equipment(class="form-control") }}
+                                    {% if form.equipment.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.equipment.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.location.label(class="form-label") }}
+                                    {{ form.location(class="form-control") }}
+                                    {% if form.location.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.location.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control") }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.description.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Classification -->
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3">🏷️ Classification</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.severity.label(class="form-label") }}
+                                    {{ form.severity(class="form-select") }}
+                                    {% if form.severity.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.severity.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.priority.label(class="form-label") }}
+                                    {{ form.priority(class="form-select") }}
+                                    {% if form.priority.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.priority.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.category.label(class="form-label") }}
+                                    {{ form.category(class="form-select") }}
+                                    {% if form.category.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.category.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.incident_type.label(class="form-label") }}
+                                    {{ form.incident_type(class="form-select") }}
+                                    {% if form.incident_type.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.incident_type.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="row mt-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">💡 Enhanced Reporting Guidelines</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Severity Levels:</h6>
+                        <ul class="small">
+                            <li><strong>Critical:</strong> System down, safety risk, immediate action needed</li>
+                            <li><strong>High:</strong> Significant impact, urgent attention required</li>
+                            <li><strong>Medium:</strong> Moderate impact, should be addressed soon</li>
+                            <li><strong>Low:</strong> Minor issue, can be scheduled for later</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Categories:</h6>
+                        <ul class="small">
+                            <li><strong>Mechanical:</strong> Physical equipment, machinery issues</li>
+                            <li><strong>Electrical:</strong> Power, electrical system problems</li>
+                            <li><strong>Software:</strong> System, application, or IT issues</li>
+                            <li><strong>Safety:</strong> Health and safety concerns</li>
+                            <li><strong>Quality:</strong> Product or service quality issues</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

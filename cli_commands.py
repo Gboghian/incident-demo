@@ -9,7 +9,7 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 from extensions import db
-from models import User, Incident
+from models import User, Incident, Engineer
 from datetime import datetime
 import os
 import random

@@ -8,58 +8,71 @@
         <div class="card">
             <div class="card-header">
                 <h3>Report New Incident</h3>
+                <p class="text-muted mb-0">Please provide detailed information about the incident to help with investigation and resolution.</p>
             </div>
             <div class="card-body">
                 <form method="POST">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Title *</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                    </div>
+                    {{ form.hidden_tag() }}
                     
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description *</label>
-                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="severity" class="form-label">Severity *</label>
-                                <select class="form-select" id="severity" name="severity" required>
-                                    <option value="">Select severity...</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="critical">Critical</option>
-                                </select>
+                        {{ form.equipment.label(class="form-label") }}
+                        {{ form.equipment(class="form-control") }}
+                        {% if form.equipment.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.equipment.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="category" class="form-label">Category *</label>
-                                <select class="form-select" id="category" name="category" required>
-                                    <option value="">Select category...</option>
-                                    <option value="Infrastructure">Infrastructure</option>
-                                    <option value="Software">Software</option>
-                                    <option value="Security">Security</option>
-                                    <option value="Network">Network</option>
-                                    <option value="Hardware">Hardware</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
                     
                     <div class="mb-3">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., Data Center A, Office Building, etc.">
+                        {{ form.location.label(class="form-label") }}
+                        {{ form.location(class="form-control") }}
+                        {% if form.location.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.location.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control") }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.description.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Report Incident</button>
+                        {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help information -->
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">💡 Tips for Reporting Incidents</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0 small">
+                    <li><strong>Equipment:</strong> Be specific about the equipment involved (model numbers, asset tags, etc.)</li>
+                    <li><strong>Location:</strong> Include building, floor, room number, or specific area</li>
+                    <li><strong>Description:</strong> Include what happened, when it occurred, who was involved, and any immediate actions taken</li>
+                </ul>
             </div>
         </div>
     </div>

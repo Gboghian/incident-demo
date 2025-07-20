@@ -58,14 +58,19 @@ def incidents():
 @main_bp.route('/incident/new', methods=['GET', 'POST'])
 @login_required
 def new_incident():
-    """Create a new incident."""
-    if request.method == 'POST':
+    """Create a new incident using Flask-WTF form."""
+    from forms import IncidentForm
+    
+    form = IncidentForm()
+    
+    if form.validate_on_submit():
         incident = Incident(
-            title=request.form['title'],
-            description=request.form['description'],
-            severity=request.form['severity'],
-            category=request.form['category'],
-            location=request.form.get('location', ''),
+            title=f"Incident at {form.location.data}",  # Generate title from location
+            description=form.description.data,
+            equipment=form.equipment.data,
+            location=form.location.data,
+            severity='medium',  # Default severity
+            category='other',   # Default category  
             reporter_id=current_user.id
         )
         db.session.add(incident)
@@ -73,7 +78,34 @@ def new_incident():
         flash('Incident reported successfully!', 'success')
         return redirect(url_for('main.index'))
     
-    return render_template('new_incident.html')
+    return render_template('new_incident.html', form=form)
+
+@main_bp.route('/incident/new/enhanced', methods=['GET', 'POST'])
+@login_required
+def new_incident_enhanced():
+    """Create a new incident using the enhanced Flask-WTF form."""
+    from forms import EnhancedIncidentForm
+    
+    form = EnhancedIncidentForm()
+    
+    if form.validate_on_submit():
+        incident = Incident(
+            title=form.title.data,
+            description=form.description.data,
+            equipment=form.equipment.data,
+            location=form.location.data,
+            severity=form.severity.data,
+            category=form.category.data,
+            priority=form.priority.data,
+            incident_type=form.incident_type.data,
+            reporter_id=current_user.id
+        )
+        db.session.add(incident)
+        db.session.commit()
+        flash('Incident reported successfully!', 'success')
+        return redirect(url_for('main.index'))
+    
+    return render_template('new_incident_enhanced.html', form=form)
 
 @main_bp.route('/incident/<int:id>')
 @login_required
