@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Incident Report Form</title>
+</head>
+<body>
+    <h1>Submit Incident Report</h1>
+    
+    <form action="/report" method="POST">
+        <!-- Equipment Field -->
+        <div>
+            <label for="equipment">Equipment:</label>
+            <input type="text" id="equipment" name="equipment" required 
+                   placeholder="e.g., Conveyor Belt #3, Hydraulic Press A2">
+        </div>
+        <br>
+        
+        <!-- Location Field -->
+        <div>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required 
+                   placeholder="e.g., Production Floor A, Warehouse Section B">
+        </div>
+        <br>
+        
+        <!-- Description Field -->
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="5" cols="50" required 
+                      placeholder="Describe what happened, when it occurred, and any immediate actions taken..."></textarea>
+        </div>
+        <br>
+        
+        <!-- Submit Button -->
+        <div>
+            <button type="submit">Submit Incident Report</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Incident Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .required {
+            color: red;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Submit Incident Report</h1>
+        
+        <form action="/report" method="POST">
+            <!-- Equipment Field -->
+            <div class="form-group">
+                <label for="equipment">Equipment <span class="required">*</span></label>
+                <input type="text" id="equipment" name="equipment" required 
+                       placeholder="e.g., Conveyor Belt #3, Hydraulic Press A2, Robot Arm #5">
+                <div class="help-text">Specify the equipment involved in the incident</div>
+            </div>
+            
+            <!-- Location Field -->
+            <div class="form-group">
+                <label for="location">Location <span class="required">*</span></label>
+                <input type="text" id="location" name="location" required 
+                       placeholder="e.g., Production Floor A, Warehouse Section B, Lab Room 101">
+                <div class="help-text">Physical location where the incident occurred</div>
+            </div>
+            
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="description">Description <span class="required">*</span></label>
+                <textarea id="description" name="description" required 
+                          placeholder="Please provide a detailed description of the incident, including what happened, when it occurred, any immediate actions taken, and potential safety concerns..."></textarea>
+                <div class="help-text">Provide a detailed description of the incident (minimum 10 characters)</div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit Incident Report</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Basic form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const equipment = document.getElementById('equipment').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const description = document.getElementById('description').value.trim();
+            
+            if (!equipment || !location || !description) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+            
+            if (description.length < 10) {
+                e.preventDefault();
+                alert('Description must be at least 10 characters long.');
+                return false;
+            }
+            
+            // Optional: Confirm submission
+            if (!confirm('Are you sure you want to submit this incident report?')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Character counter for description
+        const descriptionField = document.getElementById('description');
+        const helpText = descriptionField.parentNode.querySelector('.help-text');
+        
+        descriptionField.addEventListener('input', function() {
+            const length = this.value.length;
+            helpText.textContent = `Provide a detailed description of the incident (${length} characters)`;
+            
+            if (length < 10) {
+                helpText.style.color = '#dc3545';
+            } else {
+                helpText.style.color = '#666';
+            }
+        });
+    </script>
+</body>
+</html>
