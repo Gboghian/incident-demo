@@ -107,6 +107,41 @@ def new_incident_enhanced():
     
     return render_template('new_incident_enhanced.html', form=form)
 
+@main_bp.route('/report', methods=['GET', 'POST'])
+@login_required
+def report():
+    """Report a new incident via the /report route."""
+    from forms import IncidentForm
+    
+    form = IncidentForm()
+    
+    if form.validate_on_submit():
+        # Create new incident with current user as reporter
+        incident = Incident(
+            title=f"Equipment Issue: {form.equipment.data}",  # Generate descriptive title
+            description=form.description.data,
+            equipment=form.equipment.data,
+            location=form.location.data,
+            severity='medium',  # Default severity
+            category='mechanical',  # Default category for equipment incidents
+            status='open',  # Initial status
+            priority='medium',  # Default priority
+            reporter_id=current_user.id,  # Associate with current logged-in user
+            date_reported=datetime.utcnow()  # Set report timestamp
+        )
+        
+        try:
+            db.session.add(incident)
+            db.session.commit()
+            flash(f'Incident #{incident.id} reported successfully! Thank you for your report.', 'success')
+            return redirect(url_for('main.incident_detail', id=incident.id))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error submitting incident report. Please try again.', 'error')
+            return render_template('new_incident.html', form=form)
+    
+    return render_template('new_incident.html', form=form)
+
 @main_bp.route('/incident/<int:id>')
 @login_required
 def incident_detail(id):
