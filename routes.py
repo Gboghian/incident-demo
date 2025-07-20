@@ -142,6 +142,28 @@ def report():
     
     return render_template('new_incident.html', form=form)
 
+@main_bp.route('/incident/parts', methods=['GET', 'POST'])
+@login_required
+def incident_parts():
+    """Manage parts for incidents - demonstrates MultiCheckboxField and SelectMultipleField."""
+    from forms import IncidentPartsForm
+    
+    form = IncidentPartsForm()
+    
+    if form.validate_on_submit():
+        # Get selected parts
+        required_parts = form.required_parts.data
+        used_parts = form.used_parts.data
+        
+        # For demonstration, just show what was selected
+        flash(f'Required parts: {", ".join(required_parts) if required_parts else "None"}', 'info')
+        flash(f'Used parts: {", ".join(used_parts) if used_parts else "None"}', 'info')
+        flash('Parts selection saved successfully!', 'success')
+        
+        return redirect(url_for('main.incident_parts'))
+    
+    return render_template('incident_parts.html', form=form)
+
 @main_bp.route('/incident/<int:id>')
 @login_required
 def incident_detail(id):

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Parts Management - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3>Incident Parts Management</h3>
+                <p class="text-muted mb-0">Demonstrates MultiCheckboxField and SelectMultipleField for parts selection</p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Incident Summary -->
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3">📋 Incident Information</h5>
+                        
+                        <div class="mb-3">
+                            {{ form.incident_title.label(class="form-label") }}
+                            {{ form.incident_title(class="form-control") }}
+                            {% if form.incident_title.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.incident_title.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Parts Filter -->
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3">🔍 Parts Filter</h5>
+                        
+                        <div class="mb-3">
+                            {{ form.part_category_filter.label(class="form-label") }}
+                            {{ form.part_category_filter(class="form-select", id="category-filter") }}
+                            <div class="form-text">Filter parts list by category</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Parts Selection Methods -->
+                    <div class="row">
+                        <!-- Checkbox Method -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">☑️ MultiCheckboxField</h5>
+                                
+                                <div class="mb-3">
+                                    {{ form.required_parts.label(class="form-label") }}
+                                    <div class="form-text mb-2">{{ form.required_parts.description }}</div>
+                                    
+                                    <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                        {% if form.required_parts.choices %}
+                                            {% for subfield in form.required_parts %}
+                                                <div class="form-check">
+                                                    {{ subfield(class="form-check-input") }}
+                                                    {{ subfield.label(class="form-check-label") }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-muted">No parts available</p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if form.required_parts.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.required_parts.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Multi-Select Method -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">📋 SelectMultipleField</h5>
+                                
+                                <div class="mb-3">
+                                    {{ form.used_parts.label(class="form-label") }}
+                                    <div class="form-text mb-2">{{ form.used_parts.description }}</div>
+                                    
+                                    {{ form.used_parts(class="form-select", style="height: 200px;") }}
+                                    <div class="form-text">Hold Ctrl/Cmd to select multiple items</div>
+                                    
+                                    {% if form.used_parts.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.used_parts.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Information Cards -->
+<div class="row mt-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">☑️ MultiCheckboxField</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li><strong>Pros:</strong> Clear visual selection, easy to see all options</li>
+                            <li><strong>Pros:</strong> Individual item control, good for fewer items</li>
+                            <li><strong>Cons:</strong> Takes more space, not ideal for many items</li>
+                            <li><strong>Use case:</strong> When you have &lt;20 items and want visual clarity</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">📋 SelectMultipleField</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li><strong>Pros:</strong> Compact design, handles many items well</li>
+                            <li><strong>Pros:</strong> Familiar interface, supports keyboard navigation</li>
+                            <li><strong>Cons:</strong> Less intuitive for some users</li>
+                            <li><strong>Use case:</strong> When you have many items or limited space</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Example of dynamic filtering (placeholder for future enhancement)
+    const categoryFilter = document.getElementById('category-filter');
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', function() {
+            console.log('Category filter changed to:', this.value);
+            // Here you could implement AJAX filtering of parts
+        });
+    }
+    
+    // Count selected items and provide feedback
+    const checkboxes = document.querySelectorAll('input[name="required_parts"]');
+    const multiSelect = document.querySelector('select[name="used_parts"]');
+    
+    function updateCounts() {
+        const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const selectedCount = multiSelect ? multiSelect.selectedOptions.length : 0;
+        
+        console.log(`Checkboxes selected: ${checkedCount}, Multi-select selected: ${selectedCount}`);
+    }
+    
+    checkboxes.forEach(cb => cb.addEventListener('change', updateCounts));
+    if (multiSelect) {
+        multiSelect.addEventListener('change', updateCounts);
+    }
+});
+</script>
+{% endblock %}
