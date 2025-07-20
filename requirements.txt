@@ -20,6 +20,9 @@ python-dotenv==1.0.0
 # Production WSGI server
 gunicorn==21.2.0
 
+# PostgreSQL adapter for Render deployment
+psycopg2-binary==2.9.7
+
 # Development tools
 Flask-DebugToolbar==0.13.1
 

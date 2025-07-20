@@ -24,12 +24,16 @@ if __name__ == '__main__':
     # Initialize database tables
     initialize_database()
     
-    # Get configuration from environment
-    host = os.environ.get('FLASK_HOST', '127.0.0.1')
-    port = int(os.environ.get('FLASK_PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    # Get configuration from environment for Render deployment
+    # Render provides PORT environment variable, fallback to 5000 for local development
+    host = os.environ.get('HOST', '0.0.0.0')  # Use 0.0.0.0 for Render deployment
+    port = int(os.environ.get('PORT', os.environ.get('FLASK_PORT', 5000)))  # Render uses PORT
+    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'  # Default to False for production
     
     print(f"Starting Incident Management System...")
+    print(f"Host: {host}")
+    print(f"Port: {port}")
+    print(f"Debug mode: {debug}")
     print(f"Application will be available at: http://{host}:{port}")
     print("Press CTRL+C to quit")
     
