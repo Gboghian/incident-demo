@@ -1,34 +1,179 @@
+<!-- Login form page for engineers -->
 {% extends "base.html" %}
 
-{% block title %}Login - Incident Management System{% endblock %}
+{% block title %}Engineer Login - Incident Management System{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3>Login</h3>
-            </div>
-            <div class="card-body">
-                <form method="POST">
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <!-- Left side - Login Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center bg-light">
+            <div class="w-100" style="max-width: 400px;">
+                <div class="text-center mb-4">
+                    <i class="fas fa-hard-hat text-primary" style="font-size: 3rem;"></i>
+                    <h2 class="mt-3 fw-bold text-dark">Engineer Portal</h2>
+                    <p class="text-muted">Access the Incident Management System</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="needs-validation" novalidate>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="username" class="form-label fw-semibold">
+                            <i class="fas fa-user me-2"></i>Username or Employee ID
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="username" 
+                               name="username" 
+                               placeholder="Enter your username"
+                               required 
+                               autocomplete="username">
+                        <div class="invalid-feedback">
+                            Please provide a valid username.
+                        </div>
                     </div>
+
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="password" class="form-label fw-semibold">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   class="form-control form-control-lg" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your password"
+                                   required 
+                                   autocomplete="current-password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please provide your password.
+                        </div>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
+
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">
+                                Remember me for 30 days
+                            </label>
+                        </div>
+                        <a href="#" class="text-decoration-none small">Forgot password?</a>
                     </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+
+                    <div class="text-center">
+                        <hr class="my-3">
+                        <p class="mb-0">New engineer? 
+                            <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold">
+                                Request Access
+                            </a>
+                        </p>
+                    </div>
                 </form>
-                <hr>
-                <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+
+                <!-- Quick Access Info -->
+                <div class="mt-4 p-3 bg-white rounded border">
+                    <h6 class="fw-semibold mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>Quick Access
+                    </h6>
+                    <small class="text-muted">
+                        • Report incidents quickly<br>
+                        • Track resolution progress<br>
+                        • Access engineering documentation<br>
+                        • Collaborate with team members
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Information Panel -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center bg-primary text-white">
+            <div class="text-center px-4">
+                <i class="fas fa-cogs" style="font-size: 5rem; opacity: 0.8;"></i>
+                <h1 class="mt-4 fw-bold">Incident Management</h1>
+                <h4 class="fw-light mb-4">For Engineering Teams</h4>
+                
+                <div class="row text-center">
+                    <div class="col-4">
+                        <i class="fas fa-bolt fa-2x mb-2"></i>
+                        <p class="small">Fast<br>Reporting</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <p class="small">Real-time<br>Tracking</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <p class="small">Team<br>Collaboration</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-white bg-opacity-10 rounded">
+                    <h6 class="fw-semibold">System Status</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>All Systems Operational</span>
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Password toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+
+// Auto-focus username field
+document.getElementById('username').focus();
+</script>
 {% endblock %}
