@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Contact Information</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Get in touch with our team for support, questions, or feedback.</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>System Administration</h4>
+                        <div class="mb-3">
+                            <strong>Email:</strong> <a href="mailto:admin@example.com">admin@example.com</a><br>
+                            <strong>Phone:</strong> +1 (555) 123-4567<br>
+                            <strong>Hours:</strong> Monday - Friday, 9 AM - 5 PM
+                        </div>
+                        
+                        <h5>For Technical Issues:</h5>
+                        <ul>
+                            <li>System bugs or errors</li>
+                            <li>Performance problems</li>
+                            <li>Access issues</li>
+                            <li>Feature requests</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Emergency Contact</h4>
+                        <div class="mb-3">
+                            <strong>24/7 Hotline:</strong> +1 (555) 999-0000<br>
+                            <strong>Email:</strong> <a href="mailto:emergency@example.com">emergency@example.com</a>
+                        </div>
+                        
+                        <h5>For Critical Incidents:</h5>
+                        <ul>
+                            <li>System-wide outages</li>
+                            <li>Security breaches</li>
+                            <li>Data loss incidents</li>
+                            <li>Urgent escalations</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h4>Send Us a Message</h4>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="contact-name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="contact-name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="contact-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="contact-email" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="contact-subject" class="form-label">Subject</label>
+                        <select class="form-select" id="contact-subject">
+                            <option value="">Select a subject...</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="account">Account Issues</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="training">Training Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="contact-message" class="form-label">Message</label>
+                        <textarea class="form-control" id="contact-message" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <small><strong>Note:</strong> This is a demo contact form. In a production environment, this would send an actual email to the support team.</small>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary" onclick="showContactSuccess()">Send Message</button>
+                    <a href="{{ url_for('main.home') }}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+                
+                <hr>
+                
+                <h4>Frequently Asked Questions</h4>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                How do I reset my password?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Contact your system administrator to reset your password. Password reset functionality will be available in a future update.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                How do I report a critical incident?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Use the "Report Incident" feature and select "Critical" as the severity level. For immediate response, also contact the emergency hotline.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                Can I track incidents reported by others?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can view all incidents in the system through the "All Incidents" page. Your access level determines what actions you can take.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showContactSuccess() {
+    alert('Thank you for your message! This is a demo - in production, your message would be sent to the support team.');
+}
+</script>
+{% endblock %}

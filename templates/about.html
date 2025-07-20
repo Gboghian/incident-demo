@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}About - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">About Incident Management System</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Our Incident Management System is designed to help organizations efficiently track, manage, and resolve incidents across their operations.</p>
+                
+                <h4>Purpose</h4>
+                <p>This system provides a centralized platform for:</p>
+                <ul>
+                    <li>Reporting incidents quickly and accurately</li>
+                    <li>Tracking incident progress from creation to resolution</li>
+                    <li>Managing user access and permissions</li>
+                    <li>Generating reports and analytics</li>
+                    <li>Maintaining a comprehensive incident history</li>
+                </ul>
+                
+                <h4>Key Benefits</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>For Organizations:</h6>
+                        <ul>
+                            <li>Improved incident response times</li>
+                            <li>Better visibility into operational issues</li>
+                            <li>Compliance with reporting requirements</li>
+                            <li>Data-driven decision making</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>For Users:</h6>
+                        <ul>
+                            <li>Simple, intuitive interface</li>
+                            <li>Real-time status updates</li>
+                            <li>Mobile-friendly design</li>
+                            <li>Role-based access control</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h4>System Features</h4>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6>Incident Management:</h6>
+                        <ul>
+                            <li>Multiple severity levels (Low, Medium, High, Critical)</li>
+                            <li>Categorization system</li>
+                            <li>Location tracking</li>
+                            <li>Status workflow (Open → In Progress → Resolved → Closed)</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <h6>User Management:</h6>
+                        <ul>
+                            <li>Role-based permissions (Admin, Manager, User)</li>
+                            <li>Secure authentication</li>
+                            <li>User profile management</li>
+                            <li>Activity tracking</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h4>Technical Specifications</h4>
+                <p>Built with modern, reliable technologies:</p>
+                <ul>
+                    <li><strong>Backend:</strong> Flask (Python) with SQLAlchemy ORM</li>
+                    <li><strong>Database:</strong> SQLite (development) / PostgreSQL (production)</li>
+                    <li><strong>Frontend:</strong> Bootstrap 5 with responsive design</li>
+                    <li><strong>Authentication:</strong> Flask-Login with secure password hashing</li>
+                    <li><strong>Security:</strong> CSRF protection, secure headers, input validation</li>
+                </ul>
+                
+                <h4>Getting Support</h4>
+                <p>If you need assistance with the system:</p>
+                <ul>
+                    <li>Contact your system administrator</li>
+                    <li>Check the user documentation</li>
+                    <li>Report system issues through the incident reporting system</li>
+                </ul>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('main.home') }}" class="btn btn-primary">← Back to Home</a>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

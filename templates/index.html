@@ -1,0 +1,221 @@
+<!-- Basic homepage template for Incident Management System -->
+{% extends "base.html" %}
+
+{% block title %}Home - Incident Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white text-center p-5 rounded">
+            <h1 class="display-3 fw-bold">Incident Management System</h1>
+            <p class="lead fs-4 mb-4">Streamline your incident reporting, tracking, and resolution process</p>
+            <p class="fs-5">Efficiently manage incidents from creation to closure with our comprehensive platform</p>
+            
+            <div class="mt-4">
+                {% if current_user.is_authenticated %}
+                    <a class="btn btn-light btn-lg me-3" href="{{ url_for('main.index') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" href="{{ url_for('main.new_incident') }}">
+                        <i class="fas fa-plus me-2"></i>Report Incident
+                    </a>
+                {% else %}
+                    <a class="btn btn-light btn-lg me-3" href="{{ url_for('auth.login') }}">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" href="{{ url_for('auth.register') }}">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h2 class="display-5 fw-bold">Why Choose Our System?</h2>
+        <p class="lead text-muted">Powerful features to help you manage incidents effectively</p>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+                <h4 class="card-title">Quick Reporting</h4>
+                <p class="card-text">Report incidents quickly with our intuitive interface. Capture all essential details including severity, location, and description.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="fas fa-tasks fa-2x"></i>
+                </div>
+                <h4 class="card-title">Track Progress</h4>
+                <p class="card-text">Monitor incident status from open to resolution. Get real-time updates and maintain complete visibility throughout the process.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="fas fa-chart-bar fa-2x"></i>
+                </div>
+                <h4 class="card-title">Analytics</h4>
+                <p class="card-text">Generate comprehensive reports and analytics. Identify trends, improve processes, and make data-driven decisions.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Section (if user is logged in) -->
+{% if current_user.is_authenticated %}
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h3>System Overview</h3>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-list fa-2x mb-2"></i>
+                <h4 class="card-title">Total</h4>
+                <h2 class="display-6" id="total-count">-</h2>
+                <small>Incidents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                <h4 class="card-title">Open</h4>
+                <h2 class="display-6" id="open-count">-</h2>
+                <small>Incidents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-clock fa-2x mb-2"></i>
+                <h4 class="card-title">In Progress</h4>
+                <h2 class="display-6" id="progress-count">-</h2>
+                <small>Incidents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h4 class="card-title">Resolved</h4>
+                <h2 class="display-6" id="resolved-count">-</h2>
+                <small>Incidents</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- How It Works Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h2 class="display-5 fw-bold">How It Works</h2>
+        <p class="lead text-muted">Simple steps to get started with incident management</p>
+    </div>
+    
+    <div class="col-md-3 mb-4 text-center">
+        <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <span class="fw-bold fs-4">1</span>
+        </div>
+        <h5>Create Account</h5>
+        <p class="text-muted">Sign up for a new account or log in to get started</p>
+    </div>
+    
+    <div class="col-md-3 mb-4 text-center">
+        <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <span class="fw-bold fs-4">2</span>
+        </div>
+        <h5>Report Incident</h5>
+        <p class="text-muted">Quickly report incidents with all relevant details</p>
+    </div>
+    
+    <div class="col-md-3 mb-4 text-center">
+        <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <span class="fw-bold fs-4">3</span>
+        </div>
+        <h5>Track Progress</h5>
+        <p class="text-muted">Monitor status updates and progress in real-time</p>
+    </div>
+    
+    <div class="col-md-3 mb-4 text-center">
+        <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <span class="fw-bold fs-4">4</span>
+        </div>
+        <h5>Resolve & Close</h5>
+        <p class="text-muted">Complete resolution and close incidents efficiently</p>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="row mb-5">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="card bg-light border-0 shadow-sm">
+            <div class="card-body p-5">
+                <h2 class="card-title fw-bold mb-3">Ready to Get Started?</h2>
+                <p class="card-text lead mb-4">Join thousands of organizations using our incident management system to streamline their operations.</p>
+                
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-rocket me-2"></i>Start Free Today
+                    </a>
+                    <a href="{{ url_for('main.about') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Learn More
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('main.new_incident') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-plus me-2"></i>Report New Incident
+                    </a>
+                    <a href="{{ url_for('main.incidents') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-list me-2"></i>View All Incidents
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated %}
+<!-- Load stats via JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load statistics for authenticated users
+    fetch('{{ url_for("main.api_stats") }}')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-count').textContent = data.total_incidents || 0;
+            document.getElementById('open-count').textContent = data.open_incidents || 0;
+            document.getElementById('progress-count').textContent = data.in_progress_incidents || 0;
+            document.getElementById('resolved-count').textContent = data.resolved_incidents || 0;
+        })
+        .catch(error => {
+            console.error('Error loading stats:', error);
+            // Set default values on error
+            document.getElementById('total-count').textContent = '0';
+            document.getElementById('open-count').textContent = '0';
+            document.getElementById('progress-count').textContent = '0';
+            document.getElementById('resolved-count').textContent = '0';
+        });
+});
+</script>
+{% endif %}
+{% endblock %}

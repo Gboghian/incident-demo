@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Incident #{{ incident.id }} - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Incident #{{ incident.id }}: {{ incident.title }}</h3>
+                <span class="badge bg-{% if incident.severity == 'critical' %}danger{% elif incident.severity == 'high' %}warning{% elif incident.severity == 'medium' %}info{% else %}secondary{% endif %} fs-6">
+                    {{ incident.severity.title() }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Status:</strong></div>
+                    <div class="col-sm-9">
+                        <span class="badge bg-{% if incident.status == 'open' %}primary{% elif incident.status == 'in_progress' %}warning{% elif incident.status == 'resolved' %}success{% else %}secondary{% endif %}">
+                            {{ incident.status.replace('_', ' ').title() }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Category:</strong></div>
+                    <div class="col-sm-9">{{ incident.category }}</div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Reporter:</strong></div>
+                    <div class="col-sm-9">{{ incident.reporter.first_name }} {{ incident.reporter.last_name }}</div>
+                </div>
+                
+                {% if incident.location %}
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Location:</strong></div>
+                    <div class="col-sm-9">{{ incident.location }}</div>
+                </div>
+                {% endif %}
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Created:</strong></div>
+                    <div class="col-sm-9">{{ incident.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Last Updated:</strong></div>
+                    <div class="col-sm-9">{{ incident.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                
+                {% if incident.resolved_at %}
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Resolved:</strong></div>
+                    <div class="col-sm-9">{{ incident.resolved_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                {% endif %}
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <h5>Description</h5>
+                    <div class="border rounded p-3 bg-light">
+                        {{ incident.description|nl2br|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Actions</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.role in ['admin', 'manager'] or incident.reporter_id == current_user.id %}
+                    <form method="POST" action="{{ url_for('main.update_incident', id=incident.id) }}">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Update Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="open" {% if incident.status == 'open' %}selected{% endif %}>Open</option>
+                                <option value="in_progress" {% if incident.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                <option value="resolved" {% if incident.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                <option value="closed" {% if incident.status == 'closed' %}selected{% endif %}>Closed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+                    </form>
+                    <hr>
+                {% endif %}
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('main.incidents') }}" class="btn btn-outline-secondary">← Back to All Incidents</a>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary">← Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6>Incident Details</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>Incident ID:</strong> #{{ incident.id }}<br>
+                    <strong>Reporter:</strong> {{ incident.reporter.username }}<br>
+                    {% if incident.assigned_to %}
+                    <strong>Assigned to:</strong> {{ incident.assigned_to.first_name }} {{ incident.assigned_to.last_name }}<br>
+                    {% endif %}
+                    <strong>Priority:</strong> {{ incident.severity.title() }}<br>
+                    <strong>Category:</strong> {{ incident.category }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <!-- Hero Section -->
+        <div class="jumbotron bg-gradient text-white rounded-3 p-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="container">
+                <h1 class="display-4 fw-bold">Incident Management System</h1>
+                <p class="lead fs-4">Streamline your incident reporting, tracking, and resolution process with our comprehensive management platform.</p>
+                <hr class="my-4 border-light">
+                <div class="d-flex flex-wrap gap-3">
+                    {% if current_user.is_authenticated %}
+                        <a class="btn btn-light btn-lg px-4" href="{{ url_for('main.index') }}" role="button">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="{{ url_for('main.new_incident') }}" role="button">
+                            <i class="fas fa-plus me-2"></i>Report Incident
+                        </a>
+                    {% else %}
+                        <a class="btn btn-light btn-lg px-4" href="{{ url_for('auth.login') }}" role="button">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="{{ url_for('auth.register') }}" role="button">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <h2 class="text-center mb-5">Key Features</h2>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Incident Reporting</h5>
+                <p class="card-text">Quickly report incidents with detailed information including severity levels, categories, and locations.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-tasks fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Progress Tracking</h5>
+                <p class="card-text">Monitor incident status from open to resolution with real-time updates and notifications.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-chart-bar fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Analytics & Reports</h5>
+                <p class="card-text">Comprehensive dashboards and reporting tools to analyze trends and improve processes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section (only show if user is authenticated) -->
+{% if current_user.is_authenticated %}
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <h3 class="text-center mb-4">System Overview</h3>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h4 class="card-title">Total Incidents</h4>
+                <h2 class="display-6" id="total-incidents">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h4 class="card-title">Open</h4>
+                <h2 class="display-6" id="open-incidents">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h4 class="card-title">In Progress</h4>
+                <h2 class="display-6" id="progress-incidents">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h4 class="card-title">Resolved</h4>
+                <h2 class="display-6" id="resolved-incidents">-</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Call to Action Section -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card bg-light">
+            <div class="card-body text-center py-5">
+                <h3 class="card-title">Ready to Get Started?</h3>
+                <p class="card-text fs-5">Join our incident management platform and streamline your workflow today.</p>
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-3">Create Account</a>
+                    <a href="{{ url_for('main.about') }}" class="btn btn-outline-primary btn-lg">Learn More</a>
+                {% else %}
+                    <a href="{{ url_for('main.new_incident') }}" class="btn btn-primary btn-lg me-3">Report New Incident</a>
+                    <a href="{{ url_for('main.incidents') }}" class="btn btn-outline-primary btn-lg">View All Incidents</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated %}
+<script>
+// Load statistics via API
+fetch('{{ url_for("main.api_stats") }}')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('total-incidents').textContent = data.total_incidents;
+        document.getElementById('open-incidents').textContent = data.open_incidents;
+        document.getElementById('progress-incidents').textContent = data.in_progress_incidents;
+        document.getElementById('resolved-incidents').textContent = data.resolved_incidents;
+    })
+    .catch(error => console.error('Error loading stats:', error));
+</script>
+{% endif %}
+{% endblock %}
