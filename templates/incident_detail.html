@@ -64,6 +64,38 @@
                         {{ incident.description|nl2br|safe }}
                     </div>
                 </div>
+                
+                <!-- Parts Section -->
+                <div class="mb-3">
+                    <h5>Parts Associated</h5>
+                    {% set parts_list = incident.parts.all() %}
+                    {% if parts_list %}
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="text-primary mb-2">Selected Parts ({{ parts_list|length }})</h6>
+                                    <div class="row">
+                                        {% for part in parts_list %}
+                                        <div class="col-md-6 mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-secondary me-2">{{ part.part_number }}</span>
+                                                <span class="small">{{ part.name }}</span>
+                                            </div>
+                                            {% if part.category %}
+                                            <div class="small text-muted ms-2">Category: {{ part.category|title }}</div>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="border rounded p-3 bg-light text-muted text-center">
+                            <i class="fas fa-cog"></i> No parts associated with this incident
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -109,10 +141,31 @@
                     <strong>Assigned to:</strong> {{ incident.assigned_to.first_name }} {{ incident.assigned_to.last_name }}<br>
                     {% endif %}
                     <strong>Priority:</strong> {{ incident.severity.title() }}<br>
-                    <strong>Category:</strong> {{ incident.category }}
+                    <strong>Category:</strong> {{ incident.category }}<br>
+                    <strong>Parts Count:</strong> {{ incident.parts.count() }}
                 </small>
             </div>
         </div>
+        
+        {% set parts_list = incident.parts.all() %}
+        {% if parts_list %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6>Parts Quick View</h6>
+            </div>
+            <div class="card-body">
+                {% for part in parts_list[:5] %}
+                <div class="small mb-1">
+                    <span class="badge bg-light text-dark me-1">{{ part.part_number }}</span>
+                    {{ part.name[:25] }}{% if part.name|length > 25 %}...{% endif %}
+                </div>
+                {% endfor %}
+                {% if parts_list|length > 5 %}
+                <div class="small text-muted">... and {{ parts_list|length - 5 }} more</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

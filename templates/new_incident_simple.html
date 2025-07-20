@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}New Incident (Simple) - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3>Report New Incident - Simple Form</h3>
+                <p class="text-muted mb-0">Simplified form using concise syntax for parts selection.</p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Basic Fields -->
+                    <div class="mb-3">
+                        {{ form.equipment.label(class="form-label") }}
+                        {{ form.equipment(class="form-control") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.location.label(class="form-label") }}
+                        {{ form.location(class="form-control") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="4") }}
+                    </div>
+                    
+                    <!-- Simple Parts Selection -->
+                    <div class="mb-3">
+                        <h5>Parts Selection</h5>
+                        
+                        <!-- Simple syntax for checkbox parts -->
+                        <p>{{ form.parts.label }} {{ form.parts(multiple=True, class="form-control", style="height: 120px;") }}</p>
+                        
+                        <!-- Simple syntax for dropdown parts -->
+                        <p>{{ form.parts_dropdown.label }} {{ form.parts_dropdown(multiple=True, class="form-select", size="6") }}</p>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Code Example -->
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">💡 Simple Syntax Demonstration</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>The simple syntax used above:</strong></p>
+                <pre><code>&lt;p&gt;{{ "{{ form.parts.label }} {{ form.parts(multiple=True) }}" }}&lt;/p&gt;</code></pre>
+                <p class="small mb-0">
+                    This concise approach automatically renders the field with the multiple attribute,
+                    making it much simpler than manually iterating through choices.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

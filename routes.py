@@ -60,6 +60,7 @@ def incidents():
 def new_incident():
     """Create a new incident using Flask-WTF form."""
     from forms import IncidentForm
+    from models import Part
     
     form = IncidentForm()
     
@@ -74,9 +75,32 @@ def new_incident():
             reporter_id=current_user.id
         )
         db.session.add(incident)
+        db.session.flush()  # Flush to get the incident.id before commit
+        
+        # Handle parts selection - prioritize dropdown over checkboxes
+        selected_parts = []
+        if form.parts_dropdown.data:
+            selected_parts = form.parts_dropdown.data
+        elif form.parts.data:
+            selected_parts = form.parts.data
+        
+        # Add selected parts to the incident
+        if selected_parts:
+            for part_id in selected_parts:
+                part = Part.query.get(int(part_id))
+                if part:
+                    incident.parts.append(part)
+        
         db.session.commit()
-        flash('Incident reported successfully!', 'success')
-        return redirect(url_for('main.index'))
+        
+        # Create success message with parts info
+        parts_message = ""
+        if selected_parts:
+            part_names = [Part.query.get(int(pid)).name for pid in selected_parts if Part.query.get(int(pid))]
+            parts_message = f" Parts selected: {', '.join(part_names)}"
+        
+        flash(f'Incident #{incident.id} reported successfully!{parts_message}', 'success')
+        return redirect(url_for('main.incident_detail', id=incident.id))
     
     return render_template('new_incident.html', form=form)
 
@@ -238,6 +262,29 @@ def search():
     return render_template('search_results.html', incidents=incidents, query=query)
 
 # Authentication routes
+@auth_bp.route('/demo-login')
+def demo_login():
+    """Demo login route - automatically logs in as default demo user."""
+    # Try to get the dedicated demo user first
+    demo_user = User.query.filter_by(username='demo_user').first()
+    
+    # If demo_user doesn't exist, fallback to test_user
+    if not demo_user:
+        demo_user = User.query.filter_by(username='test_user').first()
+    
+    # If neither exists, use the first user in the database
+    if not demo_user:
+        demo_user = User.query.first()
+    
+    if demo_user:
+        login_user(demo_user, remember=False)
+        flash(f'🎭 Demo login successful! Welcome {demo_user.first_name} {demo_user.last_name} ({demo_user.username})', 'success')
+        return redirect(url_for('main.index'))
+    else:
+        # No users in database - redirect to register
+        flash('No demo user available. Please register or create a user account first.', 'warning')
+        return redirect(url_for('auth.register'))
+
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """User login."""
@@ -314,3 +361,51 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))
+
+@main_bp.route('/incident/new/simple', methods=['GET', 'POST'])
+@login_required
+def new_incident_simple():
+    """Create a new incident using simple form syntax."""
+    from forms import IncidentForm
+    from models import Part
+    
+    form = IncidentForm()
+    
+    if form.validate_on_submit():
+        incident = Incident(
+            title=f"Incident at {form.location.data}",
+            description=form.description.data,
+            equipment=form.equipment.data,
+            location=form.location.data,
+            severity='medium',
+            category='other',
+            reporter_id=current_user.id
+        )
+        db.session.add(incident)
+        db.session.flush()
+        
+        # Handle parts selection - prioritize dropdown over checkboxes
+        selected_parts = []
+        if form.parts_dropdown.data:
+            selected_parts = form.parts_dropdown.data
+        elif form.parts.data:
+            selected_parts = form.parts.data
+        
+        # Add selected parts to the incident
+        if selected_parts:
+            for part_id in selected_parts:
+                part = Part.query.get(int(part_id))
+                if part:
+                    incident.parts.append(part)
+        
+        db.session.commit()
+        
+        flash(f'Incident #{incident.id} reported successfully! (Simple form)', 'success')
+        return redirect(url_for('main.incident_detail', id=incident.id))
+    
+    return render_template('new_incident_simple.html', form=form)
+
+@main_bp.route('/demo')
+def demo():
+    """Demo access page with multiple login options."""
+    return render_template('demo.html')

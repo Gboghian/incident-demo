@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Demo Access - Incident Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-success text-white text-center">
+                <h3><i class="fas fa-play me-2"></i>Demo Access Portal</h3>
+                <p class="mb-0">Experience the Incident Management System</p>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h4>Quick Demo Login Options</h4>
+                    <p class="text-muted">Choose your preferred way to access the demo</p>
+                </div>
+                
+                <!-- Primary Demo Login -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mx-auto">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <i class="fas fa-rocket fa-3x text-success mb-3"></i>
+                                <h5>Instant Demo Access</h5>
+                                <p class="text-muted">One-click login as demo user</p>
+                                <a href="{{ url_for('auth.demo_login') }}" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-play me-2"></i>Start Demo Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Manual Login Options -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-info h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-cog fa-2x text-info mb-3"></i>
+                                <h6>Demo User Account</h6>
+                                <div class="small text-muted mb-3">
+                                    <strong>Username:</strong> demo_user<br>
+                                    <strong>Password:</strong> demo123
+                                </div>
+                                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-info">Manual Login</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-secondary h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-wrench fa-2x text-secondary mb-3"></i>
+                                <h6>Test Engineer Account</h6>
+                                <div class="small text-muted mb-3">
+                                    <strong>Username:</strong> test_user<br>
+                                    <strong>Password:</strong> test123
+                                </div>
+                                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">Manual Login</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Demo Features -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-center mb-3">What You Can Try:</h5>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                                <h6>Report Incidents</h6>
+                                <small class="text-muted">Create and submit incident reports</small>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="fas fa-cogs fa-2x text-primary mb-2"></i>
+                                <h6>Parts Selection</h6>
+                                <small class="text-muted">Multi-select parts with dropdown/checkboxes</small>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                                <h6>Dashboard View</h6>
+                                <small class="text-muted">Track incidents and view statistics</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Demo Environment:</strong> Feel free to explore all features. Data is for demonstration purposes only.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

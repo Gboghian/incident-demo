@@ -23,15 +23,48 @@ class MultiCheckboxField(SelectMultipleField):
 def get_parts_choices():
     """
     Get available parts as choices for form fields.
-    Returns a list of (part_id, display_name) tuples.
+    Returns a list of (part_id, part_name) tuples.
     """
     try:
         from models import Part
-        parts = Part.query.filter_by(status='active').order_by(Part.name).all()
-        return [(str(part.id), f"{part.part_number} - {part.name}") for part in parts]
+        return [(p.id, p.name) for p in Part.query.all()]
     except:
         # Return empty list if database not available (e.g., during testing)
         return []
+
+
+def populate_parts_choices(form):
+    """
+    Populate parts choices for any form with parts fields.
+    Uses the direct syntax: form.parts.choices = [(p.id, p.name) for p in Part.query.all()]
+    """
+    try:
+        from models import Part
+        
+        parts_choices = [(p.id, p.name) for p in Part.query.all()]
+        
+        # Set choices for any parts field that exists
+        if hasattr(form, 'parts'):
+            form.parts.choices = parts_choices
+        
+        if hasattr(form, 'parts_dropdown'):
+            form.parts_dropdown.choices = parts_choices
+        
+        if hasattr(form, 'parts_checkbox'):
+            form.parts_checkbox.choices = parts_choices
+        
+        if hasattr(form, 'parts_select'):
+            form.parts_select.choices = parts_choices
+            
+        if hasattr(form, 'required_parts'):
+            form.required_parts.choices = parts_choices
+            
+        if hasattr(form, 'used_parts'):
+            form.used_parts.choices = parts_choices
+            
+    except Exception as e:
+        # Fallback for when database is not available
+        print(f"Warning: Could not populate parts choices: {e}")
 
 
 def get_parts_by_category():
@@ -106,13 +139,27 @@ class IncidentForm(FlaskForm):
         }
     )
     
-    # Parts selection field
+    # Parts selection field - Checkbox approach
     parts = MultiCheckboxField(
-        'Parts Required/Used',
+        'Parts Required/Used (Checkboxes)',
         choices=[],  # Will be populated dynamically
         validators=[Optional()],
         description='Select parts that are required or used for this incident',
         render_kw={'class': 'form-check-input'}
+    )
+    
+    # Parts selection field - Multi-select dropdown approach
+    parts_dropdown = SelectMultipleField(
+        'Parts Required/Used (Dropdown)',
+        choices=[],  # Will be populated dynamically
+        validators=[Optional()],
+        description='Select multiple parts from the dropdown list',
+        render_kw={
+            'class': 'form-select',
+            'multiple': True,
+            'size': 6,
+            'style': 'min-height: 120px;'
+        }
     )
     
     submit = SubmitField(
@@ -126,8 +173,15 @@ class IncidentForm(FlaskForm):
         self.populate_parts_choices()
     
     def populate_parts_choices(self):
-        """Populate parts choices from database."""
-        self.parts.choices = get_parts_choices()
+        """Populate parts choices from database using direct syntax."""
+        try:
+            from models import Part
+            parts_choices = [(p.id, p.name) for p in Part.query.all()]
+            self.parts.choices = parts_choices
+            self.parts_dropdown.choices = parts_choices
+        except:
+            self.parts.choices = []
+            self.parts_dropdown.choices = []
 
 
 class EnhancedIncidentForm(FlaskForm):
@@ -270,9 +324,14 @@ class EnhancedIncidentForm(FlaskForm):
         self.populate_parts_choices()
     
     def populate_parts_choices(self):
-        """Populate parts choices from database."""
-        self.parts_checkbox.choices = get_parts_choices()
-        self.parts_select.choices = get_parts_choices()
+        """Populate parts choices from database using direct syntax."""
+        try:
+            from models import Part
+            self.parts_checkbox.choices = [(p.id, p.name) for p in Part.query.all()]
+            self.parts_select.choices = [(p.id, p.name) for p in Part.query.all()]
+        except:
+            self.parts_checkbox.choices = []
+            self.parts_select.choices = []
 
 
 class IncidentPartsForm(FlaskForm):
@@ -329,15 +388,16 @@ class IncidentPartsForm(FlaskForm):
         self.populate_parts_choices()
     
     def populate_parts_choices(self):
-        """Populate parts choices from database."""
+        """Populate parts choices from database using direct syntax."""
         try:
-            # Get all choices
-            all_choices = get_parts_choices()
-            self.required_parts.choices = all_choices
-            self.used_parts.choices = all_choices
+            from models import Part
+            # Use the direct syntax for both fields
+            parts_choices = [(p.id, p.name) for p in Part.query.all()]
+            self.required_parts.choices = parts_choices
+            self.used_parts.choices = parts_choices
             
             # If no parts available, add a helpful message
-            if not all_choices:
+            if not parts_choices:
                 placeholder_choice = [('', 'No parts available - Add parts to the system first')]
                 self.required_parts.choices = placeholder_choice
                 self.used_parts.choices = placeholder_choice

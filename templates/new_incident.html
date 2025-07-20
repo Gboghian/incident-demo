@@ -50,6 +50,71 @@
                         {% endif %}
                     </div>
                     
+                    <!-- Parts Selection Section -->
+                    <div class="mb-4">
+                        <h5 class="text-primary">Parts Selection</h5>
+                        <p class="text-muted small">Select any parts that are required or used for this incident. You can use either method below:</p>
+                        
+                        <!-- Multi-select Dropdown for Parts -->
+                        <div class="mb-3">
+                            {{ form.parts_dropdown.label(class="form-label") }}
+                            <small class="form-text text-muted d-block mb-1">{{ form.parts_dropdown.description }}</small>
+                            {{ form.parts_dropdown(class="form-select") }}
+                            {% if form.parts_dropdown.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.parts_dropdown.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Hold Ctrl (Cmd on Mac) to select multiple parts</div>
+                        </div>
+                        
+                        <!-- Alternative: Checkbox List for Parts -->
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.parts.label.text }} (Alternative)</label>
+                            <small class="form-text text-muted d-block mb-2">{{ form.parts.description }}</small>
+                            {% if form.parts.choices %}
+                                <div class="parts-checkbox-container" style="max-height: 150px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 10px;">
+                                    {% for value, label in form.parts.choices %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="{{ form.parts.name }}" value="{{ value }}" id="parts_{{ value }}">
+                                            <label class="form-check-label" for="parts_{{ value }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info small">
+                                    No parts available in the system. Please contact your administrator to add parts.
+                                </div>
+                            {% endif %}
+                            {% if form.parts.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.parts.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Simple Syntax Example (Alternative Approach) -->
+                        <div class="mb-3">
+                            <h6 class="text-info">Simple Syntax Approach:</h6>
+                            <div class="border rounded p-2 bg-light">
+                                <!-- Simple one-liner for parts selection -->
+                                <p>{{ form.parts.label }} {{ form.parts(multiple=True, class="form-control", style="height: 100px;") }}</p>
+                                
+                                <!-- Simple one-liner for parts dropdown -->
+                                <p>{{ form.parts_dropdown.label }} {{ form.parts_dropdown(multiple=True, class="form-select", style="height: 100px;") }}</p>
+                            </div>
+                            <small class="form-text text-muted">
+                                This demonstrates the simple syntax: <code>{{ "{{ form.parts(multiple=True) }}" }}</code>
+                            </small>
+                        </div>
+                    </div>
+                    
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
                         {{ form.submit(class="btn btn-primary") }}
@@ -72,6 +137,7 @@
                     <li><strong>Equipment:</strong> Be specific about the equipment involved (model numbers, asset tags, etc.)</li>
                     <li><strong>Location:</strong> Include building, floor, room number, or specific area</li>
                     <li><strong>Description:</strong> Include what happened, when it occurred, who was involved, and any immediate actions taken</li>
+                    <li><strong>Parts:</strong> Select any parts that are required for repair or were involved in the incident. You can use either the dropdown or checkbox list - both methods work the same way.</li>
                 </ul>
             </div>
         </div>
