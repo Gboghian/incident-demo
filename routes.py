@@ -175,14 +175,27 @@ def register():
         password = request.form['password']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
+        department = request.form.get('department', '')
+        role_level = request.form.get('role', '')
+        notifications_enabled = 'notifications' in request.form
+        
+        # Validate required fields
+        if not all([username, email, password, first_name, last_name]):
+            flash('Please fill in all required fields.', 'error')
+            return render_template('register.html')
         
         # Check if user already exists
         if User.query.filter_by(username=username).first():
-            flash('Username already exists.', 'error')
+            flash('Username already exists. Please choose a different username.', 'error')
             return render_template('register.html')
         
         if User.query.filter_by(email=email).first():
-            flash('Email already registered.', 'error')
+            flash('Email already registered. Please use a different email or login.', 'error')
+            return render_template('register.html')
+        
+        # Password validation
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.', 'error')
             return render_template('register.html')
         
         # Create new user
@@ -190,14 +203,17 @@ def register():
             username=username,
             email=email,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            department=department,
+            role_level=role_level,
+            notifications_enabled=notifications_enabled
         )
         user.set_password(password)
         
         db.session.add(user)
         db.session.commit()
         
-        flash('Registration successful! Please log in.', 'success')
+        flash('Registration successful! Your engineer account has been created. Please log in.', 'success')
         return redirect(url_for('auth.login'))
     
     return render_template('register.html')

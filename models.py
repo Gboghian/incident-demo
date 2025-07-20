@@ -13,8 +13,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
+    department = db.Column(db.String(50), nullable=True)  # Engineering department
+    role_level = db.Column(db.String(30), nullable=True)  # Engineer role level
     role = db.Column(db.String(20), default='user')  # 'admin', 'manager', 'user'
     is_active = db.Column(db.Boolean, default=True)
+    notifications_enabled = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationship with incidents (only for incidents reported by this user)

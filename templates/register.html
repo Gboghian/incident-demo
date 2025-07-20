@@ -1,42 +1,397 @@
+<!-- Registration page for new engineers -->
 {% extends "base.html" %}
 
-{% block title %}Register - Incident Management System{% endblock %}
+{% block title %}Engineer Registration - Incident Management System{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3>Register</h3>
-            </div>
-            <div class="card-body">
-                <form method="POST">
-                    <div class="mb-3">
-                        <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <!-- Left side - Registration Form -->
+        <div class="col-lg-7 d-flex align-items-center justify-content-center bg-light">
+            <div class="w-100" style="max-width: 500px;">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus text-primary" style="font-size: 3rem;"></i>
+                    <h2 class="mt-3 fw-bold text-dark">Join Our Engineering Team</h2>
+                    <p class="text-muted">Create your account to access the Incident Management System</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="needs-validation" novalidate id="registrationForm">
+                    <!-- Personal Information Section -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="fas fa-user me-2"></i>Personal Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2"></i>First Name
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="first_name" 
+                                           name="first_name" 
+                                           placeholder="Enter first name"
+                                           required 
+                                           pattern="[A-Za-z]{2,}"
+                                           autocomplete="given-name">
+                                    <div class="invalid-feedback">
+                                        Please provide a valid first name (minimum 2 characters).
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2"></i>Last Name
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="last_name" 
+                                           name="last_name" 
+                                           placeholder="Enter last name"
+                                           required 
+                                           pattern="[A-Za-z]{2,}"
+                                           autocomplete="family-name">
+                                    <div class="invalid-feedback">
+                                        Please provide a valid last name (minimum 2 characters).
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">
+                                    <i class="fas fa-envelope me-2"></i>Company Email Address
+                                </label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="engineer@company.com"
+                                       required 
+                                       autocomplete="email">
+                                <div class="invalid-feedback">
+                                    Please provide a valid company email address.
+                                </div>
+                                <div class="form-text">Use your official company email address</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+
+                    <!-- Account Information Section -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="fas fa-key me-2"></i>Account Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold">
+                                    <i class="fas fa-id-badge me-2"></i>Username / Employee ID
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="username" 
+                                       name="username" 
+                                       placeholder="Enter username or employee ID"
+                                       required 
+                                       pattern="[A-Za-z0-9_]{3,20}"
+                                       autocomplete="username">
+                                <div class="invalid-feedback">
+                                    Username must be 3-20 characters, letters, numbers, and underscores only.
+                                </div>
+                                <div class="form-text">Use your employee ID or create a unique username</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           placeholder="Create a strong password"
+                                           required 
+                                           minlength="8"
+                                           autocomplete="new-password">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Password must be at least 8 characters long.
+                                </div>
+                                <div class="form-text">
+                                    <div id="passwordStrength" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label fw-semibold">
+                                    <i class="fas fa-lock me-2"></i>Confirm Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="confirmPassword" 
+                                       name="confirmPassword" 
+                                       placeholder="Confirm your password"
+                                       required 
+                                       autocomplete="new-password">
+                                <div class="invalid-feedback">
+                                    Passwords do not match.
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+
+                    <!-- Department Information Section -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="fas fa-building me-2"></i>Department Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="department" class="form-label fw-semibold">
+                                        <i class="fas fa-users me-2"></i>Department
+                                    </label>
+                                    <select class="form-select" id="department" name="department" required>
+                                        <option value="">Select Department</option>
+                                        <option value="software">Software Engineering</option>
+                                        <option value="hardware">Hardware Engineering</option>
+                                        <option value="qa">Quality Assurance</option>
+                                        <option value="devops">DevOps/Infrastructure</option>
+                                        <option value="security">Security Engineering</option>
+                                        <option value="data">Data Engineering</option>
+                                        <option value="research">Research & Development</option>
+                                        <option value="support">Technical Support</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your department.
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="role" class="form-label fw-semibold">
+                                        <i class="fas fa-briefcase me-2"></i>Role Level
+                                    </label>
+                                    <select class="form-select" id="role" name="role" required>
+                                        <option value="">Select Role</option>
+                                        <option value="junior">Junior Engineer</option>
+                                        <option value="engineer">Engineer</option>
+                                        <option value="senior">Senior Engineer</option>
+                                        <option value="lead">Lead Engineer</option>
+                                        <option value="manager">Engineering Manager</option>
+                                        <option value="director">Director</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your role level.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+
+                    <!-- Terms and Conditions -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                                <div class="invalid-feedback">
+                                    You must agree to the terms and conditions.
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="notifications" name="notifications">
+                                <label class="form-check-label" for="notifications">
+                                    Send me email notifications about incident updates and system announcements
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="fas fa-user-plus me-2"></i>Create Engineer Account
+                    </button>
+
+                    <div class="text-center">
+                        <hr class="my-3">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold">
+                                Sign In Here
+                            </a>
+                        </p>
                     </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
                 </form>
-                <hr>
-                <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+            </div>
+        </div>
+
+        <!-- Right side - Information Panel -->
+        <div class="col-lg-5 d-flex align-items-center justify-content-center bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="text-center px-4 text-white">
+                <i class="fas fa-shield-alt" style="font-size: 4rem; opacity: 0.9;"></i>
+                <h2 class="mt-4 fw-bold">Welcome to IMS</h2>
+                <h5 class="fw-light mb-4">Engineering Portal</h5>
+                
+                <div class="mb-4">
+                    <h6 class="fw-semibold mb-3">What you'll get access to:</h6>
+                    <div class="text-start">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-3"></i>
+                            <span>Real-time incident reporting and tracking</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-3"></i>
+                            <span>Collaborative problem-solving tools</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-3"></i>
+                            <span>Advanced analytics and reporting</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-3"></i>
+                            <span>Mobile-responsive interface</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-3"></i>
+                            <span>Integration with engineering tools</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-white bg-opacity-15 rounded">
+                    <h6 class="fw-semibold mb-2">Security & Privacy</h6>
+                    <small>
+                        Your data is protected with enterprise-grade security. 
+                        All communications are encrypted and access is role-based.
+                    </small>
+                </div>
+
+                <div class="mt-4">
+                    <small class="opacity-75">
+                        Need help? Contact IT Support:<br>
+                        <i class="fas fa-envelope me-1"></i> support@company.com<br>
+                        <i class="fas fa-phone me-1"></i> +1 (555) 123-4567
+                    </small>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Password toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+
+// Password strength checker
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strengthDiv = document.getElementById('passwordStrength');
+    
+    let strength = 0;
+    let feedback = [];
+    
+    if (password.length >= 8) strength++;
+    else feedback.push('At least 8 characters');
+    
+    if (/[A-Z]/.test(password)) strength++;
+    else feedback.push('One uppercase letter');
+    
+    if (/[a-z]/.test(password)) strength++;
+    else feedback.push('One lowercase letter');
+    
+    if (/\d/.test(password)) strength++;
+    else feedback.push('One number');
+    
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    else feedback.push('One special character');
+    
+    let strengthText = '';
+    let strengthClass = '';
+    
+    if (strength < 2) {
+        strengthText = 'Weak';
+        strengthClass = 'text-danger';
+    } else if (strength < 4) {
+        strengthText = 'Medium';
+        strengthClass = 'text-warning';
+    } else {
+        strengthText = 'Strong';
+        strengthClass = 'text-success';
+    }
+    
+    if (password.length > 0) {
+        strengthDiv.innerHTML = `
+            <small class="${strengthClass}">
+                Password strength: ${strengthText}
+                ${feedback.length > 0 ? '<br>Missing: ' + feedback.join(', ') : ''}
+            </small>
+        `;
+    } else {
+        strengthDiv.innerHTML = '';
+    }
+});
+
+// Password confirmation validation
+document.getElementById('confirmPassword').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    
+    if (confirmPassword !== password) {
+        this.setCustomValidity('Passwords do not match');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+// Auto-focus first name field
+document.getElementById('first_name').focus();
+</script>
 {% endblock %}
